@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Classes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .tab-active { border-bottom: 3px solid #f97316; color: #f97316; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6 px-6 shadow-lg">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-dumbbell text-3xl"></i>
+                <h1 class="text-3xl font-bold">Yoga Classes</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <% if (user) { %>
+                    <% if (user.isAdmin) { %>
+                        <a href="/admin" class="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300">Admin Panel</a>
+                    <% } %>
+                    <a href="/profile" class="bg-white text-orange-500 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">Profile</a>
+                <% } else { %>
+                    <a href="/login" class="bg-white text-orange-500 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">Login</a>
+                <% } %>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto p-6">
+        <!-- Tabs -->
+        <div class="bg-white rounded-xl shadow-lg mb-8">
+            <div class="border-b border-gray-200">
+                <nav class="flex space-x-8 px-8">
+                    <button onclick="showTab('free')" class="tab-btn tab-active py-4 font-medium transition duration-300 flex items-center space-x-2">
+                        <i class="fas fa-gift"></i>
+                        <span>Free Classes</span>
+                    </button>
+                    <button onclick="showTab('paid')" class="tab-btn py-4 text-gray-500 hover:text-orange-500 font-medium transition duration-300 flex items-center space-x-2">
+                        <i class="fas fa-crown"></i>
+                        <span>Premium Classes</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Free Classes Tab -->
+            <div id="free" class="tab-content p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-gift mr-3 text-green-500"></i>
+                    Free Classes
+                </h2>
+                
+                <% if (freeClasses && freeClasses.length > 0) { %>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <% freeClasses.forEach(classItem => { %>
+                            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden card-hover">
+                                <!-- Class Header -->
+                                <div class="bg-gradient-to-r from-green-400 to-green-600 text-white p-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="px-2 py-1 bg-white bg-opacity-20 rounded-full text-xs font-medium">FREE</span>
+                                        <i class="fas fa-dumbbell text-xl"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Class Content -->
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold mb-2"><%= classItem.title %></h3>
+                                    <p class="text-gray-600 mb-4"><%= classItem.description || 'Join this amazing yoga session' %></p>
+                                    
+                                    <!-- Instructor -->
+                                    <div class="flex items-center mb-4">
+                                        <img src="<%= classItem.instructor.profilePhoto || '/images/default-avatar.png' %>" alt="Instructor" class="w-8 h-8 rounded-full mr-3">
+                                        <div>
+                                            <p class="text-sm font-medium"><%= classItem.instructor.firstName %> <%= classItem.instructor.lastName %></p>
+                                            <p class="text-xs text-gray-500">Instructor</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Class Details -->
+                                    <div class="space-y-2 mb-4">
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-clock mr-2 text-green-500"></i>
+                                            <span><%= classItem.duration %> minutes</span>
+                                        </div>
+                                        <% if (classItem.scheduledDate) { %>
+                                            <div class="flex items-center text-sm text-gray-600">
+                                                <i class="fas fa-calendar mr-2 text-green-500"></i>
+                                                <span><%= new Date(classItem.scheduledDate).toLocaleDateString() %> at <%= new Date(classItem.scheduledDate).toLocaleTimeString() %></span>
+                                            </div>
+                                        <% } %>
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-users mr-2 text-green-500"></i>
+                                            <span><%= classItem.participants.length %>/<%= classItem.maxParticipants %> participants</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Button -->
+                                    <% if (user) { %>
+                                        <% const isEnrolled = userEnrollments.some(e => e.classId.toString() === classItem._id.toString()) %>
+                                        <% if (isEnrolled) { %>
+                                            <div class="flex space-x-2">
+                                                <span class="flex-1 bg-green-100 text-green-800 px-4 py-2 rounded-lg text-center font-medium">
+                                                    <i class="fas fa-check mr-2"></i>Enrolled
+                                                </span>
+                                                <% if (classItem.videoUrl) { %>
+                                                    <a href="<%= classItem.videoUrl %>" target="_blank" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
+                                                        <i class="fas fa-play"></i>
+                                                    </a>
+                                                <% } %>
+                                            </div>
+                                        <% } else if (classItem.participants.length >= classItem.maxParticipants) { %>
+                                            <button disabled class="w-full bg-gray-300 text-gray-500 px-4 py-2 rounded-lg cursor-not-allowed">
+                                                <i class="fas fa-users mr-2"></i>Class Full
+                                            </button>
+                                        <% } else { %>
+                                            <form action="/classes/enroll/<%= classItem._id %>" method="POST">
+                                                <button type="submit" class="w-full bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300">
+                                                    <i class="fas fa-plus mr-2"></i>Join Free Class
+                                                </button>
+                                            </form>
+                                        <% } %>
+                                    <% } else { %>
+                                        <a href="/login" class="block w-full bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300 text-center">
+                                            <i class="fas fa-sign-in-alt mr-2"></i>Login to Join
+                                        </a>
+                                    <% } %>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <div class="text-center py-12">
+                        <i class="fas fa-gift text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">No free classes available right now.</p>
+                        <p class="text-gray-400">Check back later for new sessions!</p>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Paid Classes Tab -->
+            <div id="paid" class="tab-content hidden p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-crown mr-3 text-yellow-500"></i>
+                    Premium Classes
+                </h2>
+                
+                <% if (paidClasses && paidClasses.length > 0) { %>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <% paidClasses.forEach(classItem => { %>
+                            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden card-hover">
+                                <!-- Class Header -->
+                                <div class="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="px-2 py-1 bg-white bg-opacity-20 rounded-full text-xs font-medium">PREMIUM</span>
+                                        <div class="text-right">
+                                            <div class="text-lg font-bold">$<%= classItem.price %></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Class Content -->
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold mb-2"><%= classItem.title %></h3>
+                                    <p class="text-gray-600 mb-4"><%= classItem.description || 'Premium yoga experience with expert guidance' %></p>
+                                    
+                                    <!-- Instructor -->
+                                    <div class="flex items-center mb-4">
+                                        <img src="<%= classItem.instructor.profilePhoto || '/images/default-avatar.png' %>" alt="Instructor" class="w-8 h-8 rounded-full mr-3">
+                                        <div>
+                                            <p class="text-sm font-medium"><%= classItem.instructor.firstName %> <%= classItem.instructor.lastName %></p>
+                                            <p class="text-xs text-gray-500">Expert Instructor</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Class Details -->
+                                    <div class="space-y-2 mb-4">
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-clock mr-2 text-orange-500"></i>
+                                            <span><%= classItem.duration %> minutes</span>
+                                        </div>
+                                        <% if (classItem.scheduledDate) { %>
+                                            <div class="flex items-center text-sm text-gray-600">
+                                                <i class="fas fa-calendar mr-2 text-orange-500"></i>
+                                                <span><%= new Date(classItem.scheduledDate).toLocaleDateString() %> at <%= new Date(classItem.scheduledDate).toLocaleTimeString() %></span>
+                                            </div>
+                                        <% } %>
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-users mr-2 text-orange-500"></i>
+                                            <span><%= classItem.participants.length %>/<%= classItem.maxParticipants %> participants</span>
+                                        </div>
+                                        <% if (classItem.meetingLink) { %>
+                                            <div class="flex items-center text-sm text-green-600">
+                                                <i class="fas fa-video mr-2"></i>
+                                                <span>Live Session Available</span>
+                                            </div>
+                                        <% } %>
+                                    </div>
+
+                                    <!-- Action Button -->
+                                    <% if (user) { %>
+                                        <% const isEnrolled = userEnrollments.some(e => e.classId.toString() === classItem._id.toString()) %>
+                                        <% if (isEnrolled) { %>
+                                            <div class="space-y-2">
+                                                <span class="block w-full bg-green-100 text-green-800 px-4 py-2 rounded-lg text-center font-medium">
+                                                    <i class="fas fa-check mr-2"></i>Enrolled
+                                                </span>
+                                                <% if (classItem.meetingLink) { %>
+                                                    <a href="<%= classItem.meetingLink %>" target="_blank" class="block w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 text-center">
+                                                        <i class="fas fa-video mr-2"></i>Join Live Session
+                                                    </a>
+                                                <% } %>
+                                                <% if (classItem.videoUrl) { %>
+                                                    <a href="<%= classItem.videoUrl %>" target="_blank" class="block w-full bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition duration-300 text-center">
+                                                        <i class="fas fa-play mr-2"></i>Watch Recording
+                                                    </a>
+                                                <% } %>
+                                            </div>
+                                        <% } else if (classItem.participants.length >= classItem.maxParticipants) { %>
+                                            <button disabled class="w-full bg-gray-300 text-gray-500 px-4 py-2 rounded-lg cursor-not-allowed">
+                                                <i class="fas fa-users mr-2"></i>Class Full
+                                            </button>
+                                        <% } else { %>
+                                            <form action="/classes/enroll/<%= classItem._id %>" method="POST">
+                                                <button type="submit" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg hover:from-yellow-600 hover:to-orange-600 transition duration-300">
+                                                    <i class="fas fa-crown mr-2"></i>Enroll for $<%= classItem.price %>
+                                                </button>
+                                            </form>
+                                        <% } %>
+                                    <% } else { %>
+                                        <a href="/login" class="block w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg hover:from-yellow-600 hover:to-orange-600 transition duration-300 text-center">
+                                            <i class="fas fa-sign-in-alt mr-2"></i>Login to Enroll
+                                        </a>
+                                    <% } %>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <div class="text-center py-12">
+                        <i class="fas fa-crown text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">No premium classes available right now.</p>
+                        <p class="text-gray-400">Check back later for exclusive sessions!</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active styles from all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('text-gray-500');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.remove('hidden');
+            
+            // Add active styles to clicked button
+            event.target.classList.add('tab-active');
+            event.target.classList.remove('text-gray-500');
+        }
+    </script>
+</body>
+</html>
