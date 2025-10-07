@@ -18,25 +18,24 @@
     </style>
 </head>
 <body class="bg-gray-100">
-    <!-- Header -->
-    <header class="gradient-bg text-white py-4 px-6 shadow-lg">
+    <%- include('partials/header') %>
+    
+    <!-- Page Header -->
+    <div class="gradient-bg text-white py-6 px-6">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <i class="fas fa-comments text-2xl"></i>
+                <i class="fas fa-comments text-3xl"></i>
                 <div>
-                    <h1 class="text-2xl font-bold">Dincharya</h1>
-                    <p class="text-sm opacity-90">Community Chat</p>
+                    <h1 class="text-3xl font-bold">Dincharya</h1>
+                    <p class="text-lg opacity-90">Community Chat</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-2">
-                    <div class="online-indicator"></div>
-                    <span class="text-sm"><%= usersWithPhone.length %> members</span>
-                </div>
-                <a href="/profile" class="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">Profile</a>
+            <div class="flex items-center space-x-2">
+                <div class="online-indicator"></div>
+                <span class="text-sm"><%= usersWithPhone.length %> members online</span>
             </div>
         </div>
-    </header>
+    </div>
 
     <div class="max-w-6xl mx-auto flex h-screen">
         <!-- Sidebar - Members List -->

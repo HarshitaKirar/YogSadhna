@@ -14,25 +14,16 @@
     </style>
 </head>
 <body class="bg-gray-100">
-    <!-- Header -->
-    <header class="gradient-bg text-white py-6 px-6 shadow-lg">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <i class="fas fa-dumbbell text-3xl"></i>
-                <h1 class="text-3xl font-bold">Yoga Classes</h1>
-            </div>
-            <div class="flex items-center space-x-4">
-                <% if (user) { %>
-                    <% if (user.isAdmin) { %>
-                        <a href="/admin" class="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300">Admin Panel</a>
-                    <% } %>
-                    <a href="/profile" class="bg-white text-orange-500 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">Profile</a>
-                <% } else { %>
-                    <a href="/login" class="bg-white text-orange-500 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">Login</a>
-                <% } %>
-            </div>
+    <%- include('partials/header') %>
+    
+    <!-- Page Header -->
+    <div class="gradient-bg text-white py-8 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <i class="fas fa-dumbbell text-4xl mb-2"></i>
+            <h1 class="text-4xl font-bold">Yoga Classes</h1>
+            <p class="text-xl opacity-90 mt-2">Find the perfect class for your wellness journey</p>
         </div>
-    </header>
+    </div>
 
     <div class="max-w-7xl mx-auto p-6">
         <!-- Tabs -->
@@ -46,6 +37,10 @@
                     <button onclick="showTab('paid')" class="tab-btn py-4 text-gray-500 hover:text-orange-500 font-medium transition duration-300 flex items-center space-x-2">
                         <i class="fas fa-crown"></i>
                         <span>Premium Classes</span>
+                    </button>
+                    <button onclick="showTab('services')" class="tab-btn py-4 text-gray-500 hover:text-orange-500 font-medium transition duration-300 flex items-center space-x-2">
+                        <i class="fas fa-spa"></i>
+                        <span>Services</span>
                     </button>
                 </nav>
             </div>
@@ -250,6 +245,55 @@
                     </div>
                 <% } %>
             </div>
+
+            <!-- Services Tab -->
+            <div id="services" class="tab-content hidden p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-spa mr-3 text-purple-500"></i>
+                    Our Services
+                </h2>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <% Object.keys(serviceCategories).forEach(categoryKey => { %>
+                        <% const category = serviceCategories[categoryKey] %>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <div class="w-16 h-16 bg-<%= category.color %>-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="<%= category.icon %> text-2xl text-<%= category.color %>-500"></i>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2"><%= category.name %></h3>
+                            </div>
+                            
+                            <!-- Show classes for this category -->
+                            <% const categoryClasses = [...freeClasses, ...paidClasses].filter(cls => cls.category === categoryKey) %>
+                            <% if (categoryClasses.length > 0) { %>
+                                <div class="space-y-2 mb-4">
+                                    <p class="text-sm text-gray-600 font-medium">Available Classes:</p>
+                                    <% categoryClasses.slice(0, 3).forEach(cls => { %>
+                                        <div class="flex items-center justify-between text-sm">
+                                            <span class="text-gray-700"><%= cls.title %></span>
+                                            <span class="px-2 py-1 rounded-full text-xs <%= cls.type === 'free' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' %>">
+                                                <%= cls.type === 'free' ? 'FREE' : '$' + cls.price %>
+                                            </span>
+                                        </div>
+                                    <% }) %>
+                                    <% if (categoryClasses.length > 3) { %>
+                                        <p class="text-xs text-gray-500">+<%= categoryClasses.length - 3 %> more classes</p>
+                                    <% } %>
+                                </div>
+                                <a href="/services" class="block w-full bg-<%= category.color %>-500 text-white px-4 py-2 rounded-lg hover:bg-<%= category.color %>-600 transition duration-300 text-center">
+                                    View All <%= category.name %> Classes
+                                </a>
+                            <% } else { %>
+                                <p class="text-gray-500 text-sm text-center mb-4">No classes available yet</p>
+                                <button disabled class="w-full bg-gray-300 text-gray-500 px-4 py-2 rounded-lg cursor-not-allowed">
+                                    Coming Soon
+                                </button>
+                            <% } %>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -273,6 +317,12 @@
             event.target.classList.add('tab-active');
             event.target.classList.remove('text-gray-500');
         }
+        
+        // Fix color classes for dynamic content
+        document.addEventListener('DOMContentLoaded', function() {
+            // This ensures Tailwind includes the dynamic color classes
+            const colors = ['orange', 'pink', 'blue', 'green', 'red', 'purple', 'yellow'];
+        });
     </script>
 </body>
 </html>

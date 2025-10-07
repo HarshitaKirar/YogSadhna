@@ -11,7 +11,7 @@ const classSchema = new mongoose.Schema({
   scheduledDate: Date,
   videoUrl: String,
   meetingLink: String,
-  category: { type: String, enum: ['yoga', 'meditation', 'fitness'], default: 'yoga' },
+  category: { type: String, enum: ['yoga', 'zumba', 'pranayam', 'meditation', 'fitness', 'pilates', 'aerobics'], default: 'yoga' },
   isActive: { type: Boolean, default: true },
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 }, { timestamps: true });

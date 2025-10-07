@@ -13,21 +13,16 @@
     </style>
 </head>
 <body class="bg-gray-100">
-    <!-- Header -->
-    <header class="gradient-bg text-white py-4 px-6 shadow-lg">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <i class="fas fa-user-shield text-2xl"></i>
-                <h1 class="text-2xl font-bold">Admin Dashboard</h1>
-            </div>
-            <div class="flex items-center space-x-4">
-                <a href="/profile" class="bg-white text-red-500 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">Profile</a>
-                <form action="/logout" method="POST" class="inline">
-                    <button type="submit" class="bg-red-700 px-4 py-2 rounded-lg hover:bg-red-800 transition duration-300">Logout</button>
-                </form>
-            </div>
+    <%- include('../partials/header') %>
+    
+    <!-- Page Header -->
+    <div class="gradient-bg text-white py-6 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <i class="fas fa-user-shield text-4xl mb-2"></i>
+            <h1 class="text-4xl font-bold">Admin Dashboard</h1>
+            <p class="text-xl opacity-90 mt-2">Manage classes, users, and platform content</p>
         </div>
-    </header>
+    </div>
 
     <div class="max-w-7xl mx-auto p-6">
         <!-- Stats Cards -->
@@ -108,6 +103,16 @@
                     <textarea name="description" placeholder="Class Description" class="md:col-span-2 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500" rows="3"></textarea>
                     <input type="url" name="videoUrl" placeholder="Video URL (for recorded classes)" class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500">
                     <input type="url" name="meetingLink" placeholder="Meeting Link (for live classes)" class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500">
+                    <select name="category" required class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500">
+                        <option value="">Select Service Category</option>
+                        <option value="yoga">Yoga</option>
+                        <option value="zumba">Zumba</option>
+                        <option value="pranayam">Pranayam</option>
+                        <option value="meditation">Meditation</option>
+                        <option value="fitness">Fitness</option>
+                        <option value="pilates">Pilates</option>
+                        <option value="aerobics">Aerobics</option>
+                    </select>
                     <div class="md:col-span-2 flex space-x-4">
                         <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-300">Create Class</button>
                         <button type="button" onclick="toggleClassForm()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition duration-300">Cancel</button>

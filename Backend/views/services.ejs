@@ -1,126 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services</title>
     <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
-    <!-- Services Section -->
-    <section class="py-16 bg-[#FFF8F0]" id="services">
-      <div class="max-w-6xl mx-auto text-center px-6">
-        <h2 class="text-4xl font-bold text-[#5C4033] mb-10">Our Services</h2>
-        <p class="text-gray-600 mb-12 max-w-2xl mx-auto">
-          Explore our wide range of wellness programs designed to balance your
-          mind, body, and soul. Whether you prefer fitness, relaxation, or
-          mindfulness, we have something for you.
-        </p>
-
-        <div class="grid md:grid-cols-3 gap-8">
-          <!-- Yoga -->
-          <div
-            class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition"
-          >
-            <img
-              src="https://img.icons8.com/ios-filled/100/5C4033/lotus.png"
-              alt="Yoga"
-              class="mx-auto mb-4"
-            />
-            <h3 class="text-xl font-semibold text-[#5C4033] mb-2">Yoga</h3>
-            <p class="text-gray-600">
-              Traditional yoga practices designed to improve flexibility,
-              balance, and inner peace.
-            </p>
-          </div>
-
-          <!-- Zumba -->
-          <div
-            class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition"
-          >
-            <img
-              src="https://img.icons8.com/ios-filled/100/5C4033/dancing.png"
-              alt="Zumba"
-              class="mx-auto mb-4"
-            />
-            <h3 class="text-xl font-semibold text-[#5C4033] mb-2">Zumba</h3>
-            <p class="text-gray-600">
-              High-energy dance workouts to keep you fit while having fun with
-              music and movement.
-            </p>
-          </div>
-
-          <!-- Pranayama -->
-          <div
-            class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition"
-          >
-            <img
-              src="https://img.icons8.com/ios-filled/100/5C4033/wind.png"
-              alt="Pranayama"
-              class="mx-auto mb-4"
-            />
-            <h3 class="text-xl font-semibold text-[#5C4033] mb-2">Pranayama</h3>
-            <p class="text-gray-600">
-              Breathing techniques to energize your body, calm your mind, and
-              improve concentration.
-            </p>
-          </div>
-
-          <!-- Meditation -->
-          <div
-            class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition"
-          >
-            <img
-              src="https://img.icons8.com/ios-filled/100/5C4033/meditation-guru.png"
-              alt="Meditation"
-              class="mx-auto mb-4"
-            />
-            <h3 class="text-xl font-semibold text-[#5C4033] mb-2">
-              Meditation
-            </h3>
-            <p class="text-gray-600">
-              Guided sessions to reduce stress, improve mindfulness, and boost
-              mental clarity.
-            </p>
-          </div>
-
-          <!-- Offline Studio Sessions -->
-          <div
-            class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition"
-          >
-            <img
-              src="https://img.icons8.com/ios-filled/100/5C4033/home.png"
-              alt="Studio Sessions"
-              class="mx-auto mb-4"
-            />
-            <h3 class="text-xl font-semibold text-[#5C4033] mb-2">
-              Studio Sessions
-            </h3>
-            <p class="text-gray-600">
-              Join us in person at our calming studio for a more immersive yoga
-              experience.
-            </p>
-          </div>
-
-          <!-- Online Sessions -->
-          <div
-            class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition"
-          >
-            <img
-              src="https://img.icons8.com/ios-filled/100/5C4033/laptop.png"
-              alt="Online Classes"
-              class="mx-auto mb-4"
-            />
-            <h3 class="text-xl font-semibold text-[#5C4033] mb-2">
-              Online Classes
-            </h3>
-            <p class="text-gray-600">
-              Practice from home with live and recorded classes accessible
-              anytime, anywhere.
-            </p>
-          </div>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <%- include('partials/header') %>
+    
+    <!-- Page Header -->
+    <div class="gradient-bg text-white py-8 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <i class="fas fa-spa text-4xl mb-2"></i>
+            <h1 class="text-4xl font-bold">Our Services</h1>
+            <p class="text-xl opacity-90 mt-2">Comprehensive wellness services for mind, body, and spirit</p>
         </div>
-      </div>
-    </section>
-  </body>
+    </div>
+
+    <div class="max-w-7xl mx-auto p-6">
+        <!-- Services Overview -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Wellness Services</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">Discover our comprehensive range of wellness services designed to nurture your body, mind, and spirit.</p>
+        </div>
+
+        <!-- Service Categories -->
+        <% Object.keys(serviceCategories).forEach(categoryKey => { %>
+            <% const category = serviceCategories[categoryKey] %>
+            <% const categoryClasses = classesByCategory[categoryKey] || [] %>
+            
+            <div class="mb-16">
+                <!-- Category Header -->
+                <div class="flex items-center mb-8">
+                    <div class="w-16 h-16 bg-<%= category.color %>-100 rounded-full flex items-center justify-center mr-6">
+                        <i class="<%= category.icon %> text-3xl text-<%= category.color %>-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-bold text-gray-800"><%= category.name %></h3>
+                        <p class="text-gray-600"><%= category.description %></p>
+                    </div>
+                </div>
+
+                <!-- Classes in this category -->
+                <% if (categoryClasses.length > 0) { %>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <% categoryClasses.forEach(classItem => { %>
+                            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden card-hover">
+                                <!-- Class Header -->
+                                <div class="bg-gradient-to-r from-<%= category.color %>-400 to-<%= category.color %>-600 text-white p-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="px-2 py-1 bg-white bg-opacity-20 rounded-full text-xs font-medium">
+                                            <%= classItem.type.toUpperCase() %>
+                                        </span>
+                                        <% if (classItem.type === 'paid') { %>
+                                            <div class="text-right">
+                                                <div class="text-lg font-bold">$<%= classItem.price %></div>
+                                            </div>
+                                        <% } else { %>
+                                            <div class="text-lg font-bold">FREE</div>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <!-- Class Content -->
+                                <div class="p-6">
+                                    <h4 class="text-xl font-bold mb-2"><%= classItem.title %></h4>
+                                    <p class="text-gray-600 mb-4"><%= classItem.description || 'Join this amazing ' + category.name.toLowerCase() + ' session' %></p>
+                                    
+                                    <!-- Instructor -->
+                                    <div class="flex items-center mb-4">
+                                        <img src="<%= classItem.instructor.profilePhoto || '/images/default-avatar.png' %>" alt="Instructor" class="w-8 h-8 rounded-full mr-3">
+                                        <div>
+                                            <p class="text-sm font-medium"><%= classItem.instructor.firstName %> <%= classItem.instructor.lastName %></p>
+                                            <p class="text-xs text-gray-500">Instructor</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Class Details -->
+                                    <div class="space-y-2 mb-4">
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-clock mr-2 text-<%= category.color %>-500"></i>
+                                            <span><%= classItem.duration %> minutes</span>
+                                        </div>
+                                        <% if (classItem.scheduledDate) { %>
+                                            <div class="flex items-center text-sm text-gray-600">
+                                                <i class="fas fa-calendar mr-2 text-<%= category.color %>-500"></i>
+                                                <span><%= new Date(classItem.scheduledDate).toLocaleDateString() %> at <%= new Date(classItem.scheduledDate).toLocaleTimeString() %></span>
+                                            </div>
+                                        <% } %>
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-users mr-2 text-<%= category.color %>-500"></i>
+                                            <span><%= classItem.participants.length %>/<%= classItem.maxParticipants %> participants</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Button -->
+                                    <% if (user) { %>
+                                        <% const isEnrolled = userEnrollments.some(e => e.classId.toString() === classItem._id.toString()) %>
+                                        <% if (isEnrolled) { %>
+                                            <div class="flex space-x-2">
+                                                <span class="flex-1 bg-green-100 text-green-800 px-4 py-2 rounded-lg text-center font-medium">
+                                                    <i class="fas fa-check mr-2"></i>Enrolled
+                                                </span>
+                                                <% if (classItem.videoUrl) { %>
+                                                    <a href="<%= classItem.videoUrl %>" target="_blank" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
+                                                        <i class="fas fa-play"></i>
+                                                    </a>
+                                                <% } %>
+                                                <% if (classItem.meetingLink) { %>
+                                                    <a href="<%= classItem.meetingLink %>" target="_blank" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300">
+                                                        <i class="fas fa-video"></i>
+                                                    </a>
+                                                <% } %>
+                                            </div>
+                                        <% } else if (classItem.participants.length >= classItem.maxParticipants) { %>
+                                            <button disabled class="w-full bg-gray-300 text-gray-500 px-4 py-2 rounded-lg cursor-not-allowed">
+                                                <i class="fas fa-users mr-2"></i>Class Full
+                                            </button>
+                                        <% } else { %>
+                                            <form action="/classes/enroll/<%= classItem._id %>" method="POST">
+                                                <button type="submit" class="w-full bg-gradient-to-r from-<%= category.color %>-500 to-<%= category.color %>-600 text-white px-4 py-2 rounded-lg hover:from-<%= category.color %>-600 hover:to-<%= category.color %>-700 transition duration-300">
+                                                    <% if (classItem.type === 'free') { %>
+                                                        <i class="fas fa-plus mr-2"></i>Join Free Class
+                                                    <% } else { %>
+                                                        <i class="fas fa-crown mr-2"></i>Enroll for $<%= classItem.price %>
+                                                    <% } %>
+                                                </button>
+                                            </form>
+                                        <% } %>
+                                    <% } else { %>
+                                        <a href="/login" class="block w-full bg-gradient-to-r from-<%= category.color %>-500 to-<%= category.color %>-600 text-white px-4 py-2 rounded-lg hover:from-<%= category.color %>-600 hover:to-<%= category.color %>-700 transition duration-300 text-center">
+                                            <i class="fas fa-sign-in-alt mr-2"></i>Login to Join
+                                        </a>
+                                    <% } %>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <div class="text-center py-12 bg-white rounded-xl shadow-lg">
+                        <i class="<%= category.icon %> text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">No <%= category.name.toLowerCase() %> classes available right now.</p>
+                        <p class="text-gray-400">Check back later for new sessions!</p>
+                    </div>
+                <% } %>
+            </div>
+        <% }) %>
+    </div>
+</body>
 </html>

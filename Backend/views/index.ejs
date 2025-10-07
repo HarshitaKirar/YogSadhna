@@ -44,10 +44,10 @@
         </li>
         <li class="relative group list-none">
           <a
-            href="/classes"
+            href="/gallery"
             class="text-gray-800 hover:text-orange-500 transition-colors duration-300"
           >
-            Classes
+            Gallery
           </a>
           <span
             class="absolute left-0 bottom-0 w-0 h-1 bg-orange-500 transition-all duration-300 group-hover:w-full"
@@ -316,6 +316,43 @@
           >
         </div>
       </div>
+    </section>
+
+    <!-- ====== GALLERY SECTION ====== -->
+    <section id="gallery" class="py-20 px-8 bg-white text-center">
+      <h2 class="text-3xl font-bold mb-6">Session Gallery</h2>
+      <p class="text-gray-600 mb-8">Recent moments from our yoga sessions</p>
+      <% if (recentPosts && recentPosts.length > 0) { %>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+        <% recentPosts.forEach(post => { %>
+        <div class="rounded-lg overflow-hidden shadow hover:shadow-lg transition">
+          <% if (post.images && post.images.length > 0) { %>
+          <img src="<%= post.images[0] %>" alt="<%= post.title %>" class="w-full h-48 object-cover" />
+          <% } else { %>
+          <div class="w-full h-48 bg-gradient-to-r from-orange-400 to-pink-400 flex items-center justify-center">
+            <span class="text-white text-4xl">🧘‍♀️</span>
+          </div>
+          <% } %>
+          <div class="p-4">
+            <% if (post.sessionType) { %>
+            <span class="inline-block px-2 py-1 text-xs font-semibold text-white bg-orange-500 rounded-full mb-2">
+              <%= post.sessionType.toUpperCase() %>
+            </span>
+            <% } %>
+            <h3 class="text-xl font-semibold mb-2"><%= post.title %></h3>
+            <p class="text-gray-600 text-sm"><%= post.description.substring(0, 100) %>...</p>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+      <div class="mt-8">
+        <a href="/gallery" class="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition">
+          View All Sessions
+        </a>
+      </div>
+      <% } else { %>
+      <p class="text-gray-500">No gallery posts yet. Check back soon!</p>
+      <% } %>
     </section>
 
     <!-- ====== BLOG / RESOURCES SECTION ====== -->

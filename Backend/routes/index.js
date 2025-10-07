@@ -2,15 +2,46 @@ var express = require("express");
 var router = express.Router();
 const { register, login } = require("../model/user");
 const { getProfile, updateProfile } = require("../controllers/userController");
-const { createBlog, updateBlog, deleteBlog, likeBlog, addComment } = require('../controllers/blogController');
-const { getLibrary, suggestBook, likeBook, addReview, addComment: addBookComment } = require('../controllers/libraryController');
-const { getAdminDashboard, createClass, updateClass, deleteClass, getClassChat, sendMessage: sendClassMessage } = require('../controllers/adminController');
-const { getClasses, enrollClass } = require('../controllers/classController');
-const { getDincharya, sendMessage: sendDincharyaMessage, deleteMessage } = require('../controllers/dincharyaController');
-const { requireAdmin } = require('../middleware/adminAuth');
+const {
+  createBlog,
+  updateBlog,
+  deleteBlog,
+  likeBlog,
+  addComment,
+} = require("../controllers/blogController");
+const {
+  getLibrary,
+  suggestBook,
+  likeBook,
+  addReview,
+  addComment: addBookComment,
+} = require("../controllers/libraryController");
+const {
+  getAdminDashboard,
+  createClass,
+  updateClass,
+  deleteClass,
+  getClassChat,
+  sendMessage: sendClassMessage,
+} = require("../controllers/adminController");
+const {
+  getGallery,
+  createPost,
+  deletePost,
+  likePost,
+  addComment: addGalleryComment,
+} = require("../controllers/galleryController");
+const { getServices, enrollClass } = require("../controllers/classController");
+const {
+  getDincharya,
+  sendMessage: sendDincharyaMessage,
+  deleteMessage,
+} = require("../controllers/dincharyaController");
+const { requireAdmin } = require("../middleware/adminAuth");
 const upload = require("../middleware/upload");
-const blogUpload = require('../middleware/blogUpload');
-const dincharyaUpload = require('../middleware/dincharyaUpload');
+const blogUpload = require("../middleware/blogUpload");
+const dincharyaUpload = require("../middleware/dincharyaUpload");
+const galleryUpload = require("../middleware/galleryUpload");
 
 // Authentication middleware
 function isLoggedIn(req, res, next) {
@@ -30,41 +61,53 @@ function checkAuth(req, res, next) {
 }
 
 /* GET home page. */
-router.get("/", function (req, res, next) {
-  res.render("index", { title: "Express" });
+router.get("/", async function (req, res, next) {
+  try {
+    const { Gallery } = require('../model/gallery');
+    const recentPosts = await Gallery.find()
+      .populate('createdBy', 'firstName lastName profilePhoto')
+      .sort({ createdAt: -1 })
+      .limit(6);
+    res.render("index", { title: "Express", user: req.session.user, recentPosts });
+  } catch (error) {
+    res.render("index", { title: "Express", user: req.session.user, recentPosts: [] });
+  }
 });
 
 router.get("/register", function (req, res, next) {
-  res.render("register", { error: req.flash("error") });
+  res.render("register", { error: req.flash("error"), user: req.session.user });
 });
 
 router.get("/login", function (req, res, next) {
-  res.render("login", { error: req.flash("error") });
+  res.render("login", { error: req.flash("error"), user: req.session.user });
 });
 
 router.get("/About", function (req, res, next) {
-  res.render("about");
+  res.render("about", { user: req.session.user });
 });
 
-router.get("/classes", getClasses);
-router.post("/classes/enroll/:id", isLoggedIn, enrollClass);
+router.get("/gallery", getGallery);
 
-router.get("/services", function (req, res, next) {
-  res.render("services");
-});
+router.get("/services", getServices);
+router.post("/services/enroll/:id", isLoggedIn, enrollClass);
 
 router.get("/contact", function (req, res, next) {
-  res.render("contact");
+  res.render("contact", { user: req.session.user });
 });
 
 router.get("/blog", function (req, res, next) {
-  res.render("blog");
+  res.render("blog", { user: req.session.user });
 });
 
 router.get("/library", getLibrary);
 
 router.get("/dincharya", isLoggedIn, getDincharya);
-router.post("/dincharya/message", isLoggedIn, dincharyaUpload.single('media'), sendDincharyaMessage);
+router.post(
+  "/dincharya/message",
+  isLoggedIn,
+  dincharyaUpload.single("media"),
+  sendDincharyaMessage
+);
 router.post("/dincharya/delete/:id", isLoggedIn, deleteMessage);
 
 router.get("/profile", isLoggedIn, getProfile);
@@ -113,7 +156,7 @@ router.post("/login", async function (req, res) {
     const user = await login(email, password);
     console.log("User logged in:", user);
     req.session.user = user;
-    
+
     // Redirect admin to admin dashboard
     if (user.isAdmin) {
       res.redirect("/admin");
@@ -138,25 +181,60 @@ router.post("/logout", function (req, res) {
 });
 
 /* Blog Routes */
-router.post('/blog/create', isLoggedIn, blogUpload.fields([{name: 'images', maxCount: 5}, {name: 'videos', maxCount: 3}]), createBlog);
-router.post('/blog/update/:id', isLoggedIn, blogUpload.fields([{name: 'images', maxCount: 5}, {name: 'videos', maxCount: 3}]), updateBlog);
-router.post('/blog/delete/:id', isLoggedIn, deleteBlog);
-router.post('/blog/like/:id', isLoggedIn, likeBlog);
-router.post('/blog/comment/:id', isLoggedIn, addComment);
+router.post(
+  "/blog/create",
+  isLoggedIn,
+  blogUpload.fields([
+    { name: "images", maxCount: 5 },
+    { name: "videos", maxCount: 3 },
+  ]),
+  createBlog
+);
+router.post(
+  "/blog/update/:id",
+  isLoggedIn,
+  blogUpload.fields([
+    { name: "images", maxCount: 5 },
+    { name: "videos", maxCount: 3 },
+  ]),
+  updateBlog
+);
+router.post("/blog/delete/:id", isLoggedIn, deleteBlog);
+router.post("/blog/like/:id", isLoggedIn, likeBlog);
+router.post("/blog/comment/:id", isLoggedIn, addComment);
 
 /* Library Routes */
-router.post('/library/suggest', isLoggedIn, upload.single('coverImage'), suggestBook);
-router.post('/library/like/:id', isLoggedIn, likeBook);
-router.post('/library/review/:id', isLoggedIn, addReview);
-router.post('/library/comment/:id', isLoggedIn, addBookComment);
+router.post(
+  "/library/suggest",
+  isLoggedIn,
+  upload.single("coverImage"),
+  suggestBook
+);
+router.post("/library/like/:id", isLoggedIn, likeBook);
+router.post("/library/review/:id", isLoggedIn, addReview);
+router.post("/library/comment/:id", isLoggedIn, addBookComment);
+
+/* Gallery Routes */
+router.post(
+  "/gallery/create",
+  requireAdmin,
+  galleryUpload.fields([
+    { name: "images", maxCount: 10 },
+    { name: "videos", maxCount: 5 },
+  ]),
+  createPost
+);
+router.post("/gallery/delete/:id", requireAdmin, deletePost);
+router.post("/gallery/like/:id", isLoggedIn, likePost);
+router.post("/gallery/comment/:id", isLoggedIn, addGalleryComment);
 
 /* Admin Routes */
-router.get('/admin', requireAdmin, getAdminDashboard);
-router.post('/admin/class/create', requireAdmin, createClass);
-router.post('/admin/class/update/:id', requireAdmin, updateClass);
-router.post('/admin/class/delete/:id', requireAdmin, deleteClass);
-router.get('/admin/class/:id/chat', requireAdmin, getClassChat);
-router.post('/admin/class/:id/message', requireAdmin, sendClassMessage);
+router.get("/admin", requireAdmin, getAdminDashboard);
+router.post("/admin/class/create", requireAdmin, createClass);
+router.post("/admin/class/update/:id", requireAdmin, updateClass);
+router.post("/admin/class/delete/:id", requireAdmin, deleteClass);
+router.get("/admin/class/:id/chat", requireAdmin, getClassChat);
+router.post("/admin/class/:id/message", requireAdmin, sendClassMessage);
 
 /* API Routes */
 router.get("/api/user", checkAuth, function (req, res) {
